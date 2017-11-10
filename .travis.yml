@@ -1,6 +1,4 @@
 language: android
-jdk: oraclejdk8
-sudo: false
 before_install:
   - chmod +x gradlew
   - android list target
@@ -9,11 +7,14 @@ android:
   components:
     - platform-tools
     - tools
+    - tools
     - build-tools-25.0.1
-    - android-24
+    - android-22
+    - android-25
     - extra-android-support
     - extra-android-m2repository
-    - sys-img-armeabi-v7a-android-21
+    - addon-google_apis-google-19
+    - sys-img-armeabi-v7a-android-22
   licenses:
     - 'android-sdk-preview-license-.+'
     - 'android-sdk-license-.+'
@@ -24,5 +25,10 @@ env:
     - ADB_INSTALL_TIMEOUT=8
     - GRADLE_OPTS="-Xms128m"
 # Emulator Management: Create, Start and Wait
+before_script:
+  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
+  - emulator -avd test -no-skin -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
   
 script: ./gradlew connectedAndroidTest
